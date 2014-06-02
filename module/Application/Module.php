@@ -1,24 +1,26 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 
 namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Application\SharedListenerAggregate\Foo;
+use Application\SharedListenerAggregate\Bar;
 
 class Module
 {
+
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+        // attach foo listener
+        $fooListener = new Foo();
+        $fooListener->attachShared($eventManager->getSharedManager());
+        // attach bar listener
+        $barListener = new Bar();
+        $barListener->attachShared($eventManager->getSharedManager());
     }
 
     public function getConfig()
@@ -36,4 +38,5 @@ class Module
             ),
         );
     }
+
 }
